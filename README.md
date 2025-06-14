@@ -42,7 +42,11 @@ bin/console make:entity --api-resource
 To generate new Entities using structured data (currently `yaml` or `json`), you can use the implemented `mae:entity-from-json` maker command:
 
 ```bash
-php bin/console make:entity-from-json --from=../path/to/datefile
+# provide path to a JSON or YAML file
+php bin/console make:entity-from-json --file=../path/to/datefile
+
+# or provide JSON data directly
+php bin/console make:entity-from-yaml --data='{...}'
 ```
 
 Here are two examples of structured data files you can use:

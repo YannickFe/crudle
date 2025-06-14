@@ -2,6 +2,7 @@
 
 namespace App\Maker;
 
+use PhpParser\Node\Scalar\String_;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -9,6 +10,7 @@ use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
@@ -23,28 +25,57 @@ class MakeEntityFromJson extends AbstractMaker
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
-        $command->addOption('from', null, InputOption::VALUE_REQUIRED, 'Path to the JSON or YAML entity definition');
+        $command->addOption('file', null, InputOption::VALUE_OPTIONAL, 'Path to the JSON or YAML entity definition file');
+        $command->addOption('data', null, InputOption::VALUE_OPTIONAL, 'JSON data as string for entity generation');
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        $path = $input->getOption('from');
-        if (!file_exists($path)) {
-            throw new \RuntimeException("File not found: $path");
+        $data = $input->getOption('data');
+        $file = $input->getOption('file');
+
+        // Get content either from file or data
+        if ($file && $data) { // If both options are provided, throw an error
+            throw new \InvalidArgumentException('You can only provide either --file or --data, not both.');
+        }
+        elseif ($file) {
+            // Validate file existence
+            if (!file_exists($file)) {
+                throw new \InvalidArgumentException("File not found: $file");
+            }
+
+            // Get file type
+            $type = $type ?? strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            // Get contents from file
+            $content = file_get_contents($file);
+
+        } elseif ($data) {
+            if (empty($data)) {
+                throw new \InvalidArgumentException('No data provided.');
+            }
+            $type = 'json'; // Default to JSON if data is provided
+
+            $content = $data;
+
+        } else { // If neither option is provided, throw an error
+            throw new \InvalidArgumentException('Either --file or --data option must be provided.');
         }
 
-        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        $data = match ($ext) {
-            'json' => json_decode(file_get_contents($path), true),
-            'yaml', 'yml' => Yaml::parseFile($path),
+
+        // Get data from content
+        $data = match ($type) {
+            'json' => json_decode($content, true),
+            'yaml', 'yml' => Yaml::parse($content),
             default => throw new \InvalidArgumentException("Unsupported file type: $ext"),
         };
 
+        // Validate data
         if (!isset($data['name'], $data['fields'])) {
             throw new \InvalidArgumentException("Definition file must contain 'name' and 'fields'");
         }
 
-        // build fields block
+        // Generate entity class
+        // Build fields block
         $fieldsCode = '';
         foreach ($data['fields'] as $f) {
             $fieldsCode .= sprintf(
@@ -55,8 +86,10 @@ class MakeEntityFromJson extends AbstractMaker
             );
         }
 
+        // Create class name details
         $classNameDetails = $generator->createClassNameDetails($data['name'], 'Entity\\');
 
+        // Generate the class file
         $generator->generateClass(
             $classNameDetails->getFullName(),
             __DIR__ . '/../Resources/skeleton/Entity.tpl.php',
