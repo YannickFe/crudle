@@ -32,12 +32,71 @@ docker compose logs -f
 
 ### Create new Entities 
 
-Using symfony maker bundle, you can create new entities that will be automatically exposed as 
-API resources and documentation will be generated for them.
+Using symfony maker bundle, you can create new entities.
 
 ```bash
 # execute in /api directory
 bin/console make:entity --api-resource
+```
+
+To generate new Entities using structured data (currently `yaml` or `json`), you can use the implemented `mae:entity-from-json` maker command:
+
+```bash
+php bin/console make:entity-from-json --from=../path/to/datefile
+```
+
+Here are two examples of structured data files you can use:
+
+### Example JSON file
+
+```json
+{
+    "name": "Book",
+    "apiResource": true,
+    "fields": [
+        {
+            "name": "title",
+            "type": "string",
+            "nullable": false
+        },
+        {
+            "name": "publishedAt",
+            "type": "datetime_immutable",
+            "nullable": true
+        },
+        {
+            "name": "isbn",
+            "type": "string",
+            "nullable": true
+        },
+        {
+            "name": "pages",
+            "type": "integer",
+            "nullable": true
+        }
+    ]
+}
+```
+
+```yaml
+name: Article
+apiResource: true
+fields:
+    - name: title
+      type: string
+      nullable: false
+    - name: author
+      type: string
+      nullable: false
+    - name: publishedAt
+      type: datetime_immutable
+      nullable: true
+    - name: content
+      type: text
+      nullable: true
+    - name: views
+      type: integer
+      nullable: false
 ```
 
 
