@@ -39,7 +39,7 @@ Using symfony maker bundle, you can create new entities.
 bin/console make:entity --api-resource
 ```
 
-To generate new Entities using structured data (currently `yaml` or `json`), you can use the implemented `mae:entity-from-json` maker command:
+To generate new Entities using structured data (currently `yaml` or `json`), you can use the implemented `make:entity-from-json` maker command:
 
 ```bash
 # provide path to a JSON or YAML file
@@ -106,4 +106,4 @@ fields:
 
 ## Credits
 
-Created by [Kévin Dunglas](https://dunglas.fr). Commercial support is available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
+Yannick Fenz'l, [Kévin Dunglas](https://dunglas.fr), and contributors.
