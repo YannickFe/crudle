@@ -64,7 +64,7 @@ class MakeEntityFromJson extends AbstractMaker
         $data = match ($type) {
             'json' => json_decode($content, true),
             'yaml', 'yml' => Yaml::parse($content),
-            default => throw new \InvalidArgumentException("Unsupported file type: $ext"),
+            default => throw new \InvalidArgumentException("Unsupported file type: $type"),
         };
 
         // Validate data
