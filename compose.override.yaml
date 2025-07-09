@@ -34,9 +34,9 @@ services:
       WATCHPACK_POLLING: "true"
 
 ###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "${DATABASE_PORT:-5432}:5432"
+#  database:
+#    ports:
+#      - "${DATABASE_PORT:-5432}:5432"
 ####< doctrine/doctrine-bundle ###
 
 ###> symfony/mercure-bundle ###
