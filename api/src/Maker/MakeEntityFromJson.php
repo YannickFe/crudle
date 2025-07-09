@@ -45,16 +45,13 @@ class MakeEntityFromJson extends AbstractMaker
             // Get file type
             $type = $type ?? strtolower(pathinfo($file, PATHINFO_EXTENSION));
             // Get contents from file
-            $content = file_get_contents($file);
+            $data = file_get_contents($file);
 
         } elseif ($data) {
             if (empty($data)) {
                 throw new \InvalidArgumentException('No data provided.');
             }
             $type = 'json'; // Default to JSON if data is provided
-
-            $content = $data;
-
         } else { // If neither option is provided, throw an error
             throw new \InvalidArgumentException('Either --file or --data option must be provided.');
         }
@@ -62,8 +59,8 @@ class MakeEntityFromJson extends AbstractMaker
 
         // Get data from content
         $data = match ($type) {
-            'json' => json_decode($content, true),
-            'yaml', 'yml' => Yaml::parse($content),
+            'json' => json_decode($data, true),
+            'yaml', 'yml' => Yaml::parse($data),
             default => throw new \InvalidArgumentException("Unsupported file type: $type"),
         };
 
