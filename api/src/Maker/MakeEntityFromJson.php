@@ -2,7 +2,6 @@
 
 namespace App\Maker;
 
-use PhpParser\Node\Scalar\String_;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -10,7 +9,6 @@ use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
@@ -71,7 +69,7 @@ class MakeEntityFromJson extends AbstractMaker
 
         // Validate data
         if (!isset($data['name'], $data['fields'])) {
-            throw new \InvalidArgumentException("Definition file must contain 'name' and 'fields'");
+            throw new \InvalidArgumentException("Definition must contain 'name' and 'fields'");
         }
 
         // Generate entity class
