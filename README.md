@@ -37,7 +37,6 @@ To run multiple instances of this project on the same host, you need to configur
 - `HTTP_PORT`: The HTTP port (default: 80)
 - `HTTPS_PORT`: The HTTPS port (default: 443)
 - `HTTP3_PORT`: The HTTP/3 port (default: 443)
-- `DATABASE_PORT`: The PostgreSQL database port (default: 5432)
 
 Example of running a second instance on different ports:
 
@@ -69,6 +68,14 @@ php bin/console app:entity-from-json --file=../path/to/datefile
 
 # or provide JSON data directly
 php bin/console app:entity-from-json --data='{...}'
+```
+
+Since the automatic initialization of the database isn't implemented yet due to time crunch you need to:
+
+```bash
+cd crudle_instances/{id}/api # the commands below need to be executed in the symfony directory of the crudle instance 
+symfony console doctrine:migrations:diff
+symfony console doctrine:migrations:migrate
 ```
 
 Here are two examples of structured data files you can use:
