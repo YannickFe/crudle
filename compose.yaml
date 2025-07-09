@@ -1,6 +1,8 @@
 services:
   php:
     image: ${IMAGES_PREFIX:-}app-php
+    env_file:
+      - .env
     depends_on:
       - database
     restart: unless-stopped
@@ -34,12 +36,16 @@ services:
 
   pwa:
     image: ${IMAGES_PREFIX:-}app-pwa
+    env_file:
+      - .env
     environment:
       NEXT_PUBLIC_ENTRYPOINT: http://php
 
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-app}
       # You should definitely change the password in production

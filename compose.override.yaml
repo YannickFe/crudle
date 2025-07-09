@@ -36,10 +36,8 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - target: 5432
-        published: 5432
-        protocol: tcp
-###< doctrine/doctrine-bundle ###
+      - "${DATABASE_PORT:-5432}:5432"
+####< doctrine/doctrine-bundle ###
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

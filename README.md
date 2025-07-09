@@ -30,6 +30,28 @@ docker compose up
 docker compose logs -f
 ```
 
+### Running Multiple Instances
+
+To run multiple instances of this project on the same host, you need to configure different ports for each instance to avoid port conflicts. The application uses the following environment variables to configure ports:
+
+- `HTTP_PORT`: The HTTP port (default: 80)
+- `HTTPS_PORT`: The HTTPS port (default: 443)
+- `HTTP3_PORT`: The HTTP/3 port (default: 443)
+- `DATABASE_PORT`: The PostgreSQL database port (default: 5432)
+
+Example of running a second instance on different ports:
+
+```bash
+# First instance (default ports)
+docker compose up -d
+
+# Second instance (custom ports)
+HTTP_PORT=50000 HTTPS_PORT=50001 HTTP3_PORT=50002 DATABASE_PORT=50003 docker compose up -d
+```
+
+You can also create a `.env` file for each instance with different port configurations.
+
+
 ### Create new Entities 
 
 Using symfony maker bundle, you can create new entities.
