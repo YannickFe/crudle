@@ -15,12 +15,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 
-#[AsCommand(name: 'make:entity-from-json', description: 'Generates an API resource entity from a JSON or YAML file')]
+#[AsCommand(name: 'app:entity-from-json', description: 'Generates an API resource entity from a JSON or YAML file')]
 class MakeEntityFromJson extends AbstractMaker
 {
     public static function getCommandName(): string
     {
-        return 'make:entity-from-json';
+        return 'app:entity-from-json';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
