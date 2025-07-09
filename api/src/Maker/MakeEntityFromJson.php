@@ -69,7 +69,7 @@ class MakeEntityFromJson extends AbstractMaker
 
         // Validate data
         if (!isset($data['name'], $data['fields'])) {
-            throw new \InvalidArgumentException("Definition must contain 'name' and 'fields'");
+            throw new \InvalidArgumentException("Definition must contain 'name' and 'fields'. " . print_r($data, true));
         }
 
         // Generate entity class
