@@ -11,6 +11,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
 #[AsCommand(name: 'app:entity-from-json', description: 'Generates an API resource entity from a JSON or YAML file')]
@@ -100,6 +101,30 @@ class MakeEntityFromJson extends AbstractMaker
 
         $generator->writeChanges();
         $io->success('Entity generated.');
+
+        // migrations:diff
+        $processDiff = new Process(['php', 'bin/console', 'doctrine:migrations:diff']);
+        $processDiff->setTty(false);
+        $processDiff->run(function ($type, $buffer) use ($io) {
+            $io->writeln($buffer);
+        });
+        if (!$processDiff->isSuccessful()) {
+            $io->error('doctrine:migrations:diff failed: ' . $processDiff->getErrorOutput());
+            return;
+        }
+
+        // migrations:migrate
+        $processMigrate = new Process(['php', 'bin/console', 'doctrine:migrations:migrate', '--no-interaction']);
+        $processMigrate->setTty(false);
+        $processMigrate->run(function ($type, $buffer) use ($io) {
+            $io->writeln($buffer);
+        });
+        if (!$processMigrate->isSuccessful()) {
+            $io->error('doctrine:migrations:migrate failed: ' . $processMigrate->getErrorOutput());
+            return;
+        }
+
+        $io->success('Migrations created and applied successfully.');
     }
 
     public function configureDependencies(DependencyBuilder $dependencies): void
